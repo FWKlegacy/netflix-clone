@@ -3,6 +3,7 @@ import "./login.css";
 import logo from "../../assets/logo.png";
 import { login, signUp } from "../../firebase";
 import { useNavigate } from "react-router-dom";
+import netflix_spinner from "../../assets/netflix_spinner.gif";
 
 function Login() {
   const [signState, setSignState] = useState("Sign In");
@@ -10,9 +11,11 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const user_auth = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (signState === "Sign In") {
       await login(email, password);
       setEmail("");
@@ -20,32 +23,44 @@ function Login() {
       navigate("/");
     } else {
       await signUp(name, email, password);
-      setEmail("");
+      setName("");
       setEmail("");
       setPassword("");
+      navigate("/");
     }
+    setLoading(false);
   };
 
-  return (
+  return loading ? (
+    <div className="login-spinner">
+      <img src={netflix_spinner} alt="" />
+    </div>
+  ) : (
     <div className="login">
       <img src={logo} alt="" className="login-logo"></img>
       <div className="login-form">
         <h1>{signState}</h1>
-        <form>
+        <div>
           {signState === "Sign In" ? (
             <></>
           ) : (
-            <input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            <>
+              <label htmlFor="user-name">Name</label>
+              <input
+                id="user-name"
+                name="name"
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoComplete="name"
+                required
+              />
+            </>
           )}
+          <label htmlFor="user-email">Email</label>
           <input
-            id="email"
+            id="user-email"
             name="email"
             type="email"
             placeholder="Email"
@@ -54,8 +69,9 @@ function Login() {
             autoComplete="email"
             required
           />
+          <label htmlFor="user-password">Password</label>
           <input
-            id="password"
+            id="user-password"
             name="password"
             type="password"
             placeholder="password"
@@ -74,7 +90,7 @@ function Login() {
             </div>
             <p>Need Help?</p>
           </div>
-        </form>
+        </div>
         <div className="form-switch">
           {signState === "Sign In" ? (
             <p>

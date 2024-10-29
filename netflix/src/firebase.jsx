@@ -6,6 +6,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBPkDG_UqQwv_1YiyceU0wPTqqMukd9d3Q",
@@ -30,18 +31,20 @@ const signUp = async (name, email, password) => {
       authProvider: "local",
       email,
     });
+    console.log("Account Created");
   } catch (error) {
     console.log(error);
-    alert(error);
+    toast.error(error.code.split("/")[1].split("-").join(" "));
   }
 };
 
-const login = async () => {
+const login = async (email, password) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
+    console.log("login success");
   } catch (error) {
     console.log(error);
-    alert(error);
+    toast.error(error.code.split("/")[1].split("-").join(" "));
   }
 };
 
